@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <!--
   WebBook Single-File Viewer
-  Version: 1.2.6 (2026-10-23)
+  Version: 1.2.7 (2026-11-09)
   Changelog:
-    - [Fix] 낱장 모드 실측 분할 시 KaTeX 수식 렌더링 및 행간 병합 오차 방어를 위한 SAFETY_BUFFER(24px) 도입
-    - [Fix] 프레임 높이를 초과하는 돌발 텍스트 유실 방지를 위해 .paged-sheet에 비상 터치 스크롤(overflow-y: auto) 허용
-    - [Enhance] 모바일 스크롤 체인 방지를 위한 overscroll-behavior-y 적용
-    - [Feature] 설정 패널 및 메타 태그 버전 정보(v1.2.6) 동기화 반영
+    - [Fix] 연도 표기(~, ~~) 및 수식 기호 중첩 시 취소선 오인식 방지를 위해 취소선(strikethrough) 기능 기본 비활성화 (ENABLE_STRIKETHROUGH 플래그로 즉시 복구 가능)
+    - [Maintain] 낱장 모드 실측 분할 시 KaTeX 수식 렌더링 오차 방어 SAFETY_BUFFER(24px) 유지
+    - [Maintain] 프레임 초과 방어 비상 터치 스크롤(overflow-y: auto) 및 overscroll-behavior-y 유지
+    - [Feature] 설정 패널 및 메타 태그 버전 정보(v1.2.7) 동기화 반영
 -->
 <html lang="ko" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta name="version" content="1.2.6">
+  <meta name="version" content="1.2.7">
   <title>웹북 뷰어</title>
 
   <!-- KaTeX CSS & JS -->
@@ -981,6 +981,11 @@
       white-space: nowrap;
     }
     tbody tr:hover { background-color: var(--card-bg); }
+
+    /* 취소선(strikethrough) 제어 스타일 (ENABLE_STRIKETHROUGH 플래그 연동) */
+    del, s {
+      text-decoration: var(--del-decoration, none);
+    }
     td .katex, th .katex { font-size: 1.05em; }
 
     .view-scroll {
@@ -1341,11 +1346,11 @@
           </div>
           <div class="app-info-row">
             <span>최종 뷰어 업데이트</span>
-            <strong>2026.10.23</strong>
+            <strong>2026.11.09</strong>
           </div>
           <div class="app-info-row">
             <span>뷰어 버젼</span>
-            <span class="badge-version" id="app-version-display">v1.2.6</span>
+            <span class="badge-version" id="app-version-display">v1.2.7</span>
           </div>
         </div>
       </div>
@@ -1401,6 +1406,38 @@
   <div id="hidden-measurer"></div>
 
   <script>
+    // =========================================================
+    // 취소선(Strikethrough) 기능 제어 설정 (연도 표기 등 물결표(~) 충돌 방지)
+    // - false: 취소선 파싱 비활성화 (1990년~2000년, ~1990년 등 물결표 원문 보존)
+    // - true: GFM 취소선(~~text~~ -> <del>) 사용 복구
+    // =========================================================
+    const ENABLE_STRIKETHROUGH = false;
+
+    if (window.marked) {
+      if (!ENABLE_STRIKETHROUGH) {
+        document.documentElement.style.setProperty('--del-decoration', 'none');
+        marked.use({
+          tokenizer: {
+            del(src) {
+              // 취소선 파싱 무효화: undefined를 반환하여 물결표(~)를 일반 텍스트로 보존
+              return undefined;
+            }
+          },
+          renderer: {
+            del(token) {
+              // 렌더러 fallback: del 토큰이 생성되더라도 취소선 태그 없이 원본 텍스트 반환
+              if (typeof token === 'object' && token) {
+                return token.raw || (token.text ? '~~' + token.text + '~~' : '');
+              }
+              return '~~' + token + '~~';
+            }
+          }
+        });
+      } else {
+        document.documentElement.style.setProperty('--del-decoration', 'line-through');
+      }
+    }
+
     const STORAGE_KEY_SETTINGS = 'webbook_viewer_settings';
     const STORAGE_KEY_PROGRESS = 'webbook_viewer_progress';
 
