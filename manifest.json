@@ -1,7 +1,7 @@
 [
   {
-    "id": "translate-diff-eq",
+    "id": "docs-translate-diff-eq",
     "title": "자연의 언어로 과학 읽기: 미분 방정식 번역",
-    "file": "translate_diff_eq.md"
+    "file": "docs/translate_diff_eq.md"
   }
 ]
