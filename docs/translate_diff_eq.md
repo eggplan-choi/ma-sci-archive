@@ -12,22 +12,6 @@ title: "자연의 언어로 과학 읽기: 미분 방정식 번역"
 
 ---
 
-<!-- 상단 탭 버튼 UI 영역 -->
-
-<div class="tab-buttons" style="display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid #e1e4e8; padding-bottom: 12px; flex-wrap: wrap;">
-  <button id="btn-self-study" onclick="switchTab('self-study')" style="padding: 10px 18px; font-weight: bold; font-size: 15px; border-radius: 6px; border: 1px solid #0366d6; background-color: #0366d6; color: white; cursor: pointer;">🔍 자기주도 탐구 모드 (문장 번역 + 아코디언 상세 해설)</button>
-  <button id="btn-class-mode" onclick="switchTab('class-mode')" style="padding: 10px 18px; font-weight: bold; font-size: 15px; border-radius: 6px; border: 1px solid #d1d5da; background-color: #f6f8fa; color: #24292e; cursor: pointer;">📝 수업 진행 모드 (클린 활동지 / 인쇄용)</button>
-  <button id="btn-teacher-guide" onclick="switchTab('teacher-guide')" style="padding: 10px 18px; font-weight: bold; font-size: 15px; border-radius: 6px; border: 1px solid #d1d5da; background-color: #f6f8fa; color: #24292e; cursor: pointer;">📚 교사용 심화 가이드 (수식화 지도법 & 지성사)</button>
-</div>
-
-<!-- ========================================================================================= -->
-
-<!-- 탭 1: 자기주도 탐구 모드 -->
-
-<!-- ========================================================================================= -->
-
-<div id="tab-self-study" class="archive-tab-content" style="display: block;">
-
 ## Step 0. 자연어 $\leftrightarrow$ 수학 기호 '번역(Formulation)' 및 '차원 대칭성' 사전
 
 ### 1. 교과서 문장 분해 6대 번역 규칙
@@ -678,44 +662,3 @@ title: "자연의 언어로 과학 읽기: 미분 방정식 번역"
 * **SIRD 모델 지도 전략**: 학생들에게 완치자($R$)와 사망자($D$)를 분리해 보도록 유도하면, 전체 닫힌 코호트의 총량 보존($\frac{dS}{dt}+\frac{dI}{dt}+\frac{dR}{dt}+\frac{dD}{dt}=0$)과 실제 살아있는 인구의 감소($\frac{dN_{\text{alive}}}{dt} = -\mu I < 0$)를 명쾌하게 구별하게 됩니다. 이를 통해 학생들은 수학적 모델이 현실의 비극과 과학적 데이터를 얼마나 정직하게 담아내는지 체감할 수 있습니다.
 
 </div>
-
-<!-- ========================================================================================= -->
-
-<!-- 탭 전환 자바스크립트 및 MathJax 동적 렌더링 지원 -->
-
-<!-- ========================================================================================= -->
-
-<script>
-function switchTab(tabId) {
-  var contents = document.getElementsByClassName("archive-tab-content");
-  for (var i = 0; i < contents.length; i++) {
-    contents[i].style.display = "none";
-  }
-
-  var buttons = ["btn-self-study", "btn-class-mode", "btn-teacher-guide"];
-  for (var j = 0; j < buttons.length; j++) {
-    var btn = document.getElementById(buttons[j]);
-    if (btn) {
-      btn.style.backgroundColor = "#f6f8fa";
-      btn.style.color = "#24292e";
-      btn.style.borderColor = "#d1d5da";
-    }
-  }
-
-  var activeTab = document.getElementById("tab-" + tabId);
-  if (activeTab) {
-    activeTab.style.display = "block";
-  }
-
-  var activeBtn = document.getElementById("btn-" + tabId);
-  if (activeBtn) {
-    activeBtn.style.backgroundColor = "#0366d6";
-    activeBtn.style.color = "#ffffff";
-    activeBtn.style.borderColor = "#0366d6";
-  }
-
-  if (window.MathJax && window.MathJax.typesetPromise) {
-    window.MathJax.typesetPromise();
-  }
-}
-</script>
